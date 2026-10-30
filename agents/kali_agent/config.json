@@ -1,0 +1,14 @@
+{
+  "agent_id": "kali_primary",
+  "os_name": "Kali Linux 2026.2",
+  "role": "primary",
+  "port": 8001,
+  "incompatible_headers": [
+    "parrot_exclusive.h",
+    "bsd/stdlib.h"
+  ],
+  "incompatible_libraries": [
+    "-lcontinuum_ext",
+    "-lkernel_crypto"
+  ]
+}

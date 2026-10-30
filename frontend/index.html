@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CONTINUUM – Intelligent Cross-OS Program Continuity System</title>
+  <meta name="description" content="Intelligent cross-OS program continuity system orchestrating automated C execution and transparent failover between Kali Linux and Parrot OS virtual machines.">
+  <link rel="stylesheet" href="/css/style.css?v=3.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%232563eb%22/></svg>">
+</head>
+<body class="light-theme">
+
+  <!-- ========================================================= -->
+  <!-- TOP HEADER (Dark Blue / Navy)                             -->
+  <!-- ========================================================= -->
+  <header class="top-header">
+    <div class="header-left">
+      <button class="mobile-menu-btn btn-icon" id="btnToggleSidebar" title="Toggle Navigation Sidebar" aria-label="Toggle Sidebar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="brand-container">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#ffffff">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+        </div>
+        <div class="brand-details">
+          <div class="brand-title-row">
+            <h1 class="brand-title" id="pageTitle">CONTINUUM</h1>
+            <span class="brand-badge">v2.0</span>
+          </div>
+          <div class="brand-subtitle" id="pageSubtitle">Intelligent Cross-OS Program Continuity System</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Navigation Links -->
+    <nav class="top-nav" aria-label="Top Menu">
+      <button class="top-nav-link active" id="topNavHome">Home</button>
+      <button class="top-nav-link" id="topNavAbout">About</button>
+      <button class="top-nav-link" id="topNavHistory">History</button>
+      <button class="top-nav-link" id="topNavDoc">Documentation</button>
+    </nav>
+
+    <!-- Top Right: Theme Toggle & Agent Quick Cards -->
+    <div class="header-right">
+      <!-- Live Agent Cards in Header -->
+      <div class="header-agents">
+        <!-- Kali Status Card -->
+        <div class="agent-chip" id="cardKali" title="Primary VM Execution Node">
+          <span class="status-indicator-dot offline" id="badgeKali"></span>
+          <span class="agent-chip-label">Kali: <strong id="textStatusKali">OFFLINE</strong></span>
+          <span class="agent-chip-url" id="urlKaliDisplay" style="display:none;">http://192.168.56.101:8001</span>
+        </div>
+
+        <!-- Parrot Status Card -->
+        <div class="agent-chip" id="cardParrot" title="Backup VM Failover Node">
+          <span class="status-indicator-dot offline" id="badgeParrot"></span>
+          <span class="agent-chip-label">Parrot: <strong id="textStatusParrot">OFFLINE</strong></span>
+          <span class="agent-chip-url" id="urlParrotDisplay" style="display:none;">http://192.168.56.102:8002</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="header-actions">
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle-btn btn-icon" id="themeToggleBtn" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+
+        <!-- Refresh Agents Health -->
+        <button class="btn-icon" id="btnRefreshAgents" title="Refresh VM Agent Health Status" aria-label="Refresh Agents">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+
+        <!-- Settings Modal Trigger -->
+        <button class="btn-icon" id="btnOpenSettings" title="Agent Network Configuration" aria-label="Settings">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================= -->
+  <!-- MAIN APP CONTAINER                                        -->
+  <!-- ========================================================= -->
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR (Dark Navy) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section-title">NAVIGATION</div>
+
+      <nav class="sidebar-nav" aria-label="Sidebar Sections">
+        <!-- 1. Execute Program -->
+        <button class="nav-item active" id="navExecute" data-view="viewExecute">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          <span class="nav-label">Execute Program</span>
+        </button>
+
+        <!-- 2. Execution History -->
+        <button class="nav-item" id="navHistory" data-view="viewHistory">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="nav-label">Execution History</span>
+        </button>
+
+        <!-- 3. System Status -->
+        <button class="nav-item" id="navStatus" data-view="viewStatus">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+            <line x1="6" y1="6" x2="6.01" y2="6"/>
+            <line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+          <span class="nav-label">System Status</span>
+          <span class="nav-status-dot" id="navSidebarStatusDot"></span>
+        </button>
+
+        <!-- 4. Test Cases -->
+        <button class="nav-item" id="navTestCases" data-view="viewTestCases">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <path d="M9 15l2 2 4-4"/>
+          </svg>
+          <span class="nav-label">Test Cases</span>
+          <span class="nav-tag">1–5</span>
+        </button>
+
+        <!-- 5. Settings -->
+        <button class="nav-item" id="navSettings" data-view="viewSettings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span class="nav-label">Settings</span>
+        </button>
+
+        <!-- 6. About -->
+        <button class="nav-item" id="navAbout" data-view="viewAbout">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <span class="nav-label">About</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer Nodes Telemetry -->
+      <div class="sidebar-telemetry">
+        <div class="telemetry-title">VM CLUSTER TELEMETRY</div>
+        <div class="telemetry-item">
+          <span class="telemetry-dot" id="sidebarKaliDot"></span>
+          <span class="telemetry-name">Kali Linux VM</span>
+          <span class="telemetry-status" id="sidebarKaliText">OFFLINE</span>
+        </div>
+        <div class="telemetry-item">
+          <span class="telemetry-dot" id="sidebarParrotDot"></span>
+          <span class="telemetry-name">Parrot OS VM</span>
+          <span class="telemetry-status" id="sidebarParrotText">OFFLINE</span>
+        </div>
+        <div class="telemetry-footer">
+          Controller: 127.0.0.1:8000
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT (Clean Content Cards) -->
+    <div class="main-viewport">
+
+      <!-- ========================================================= -->
+      <!-- VIEW 1: EXECUTE PROGRAM (Main Workbench)                  -->
+      <!-- ========================================================= -->
+      <div class="view-section active" id="viewExecute">
+        
+        <!-- Quick Scenarios Presets Bar -->
+        <div class="quick-scenarios-bar">
+          <span class="scenarios-title">Quick Scenarios:</span>
+          <button class="preset-btn" data-preset="normal">⚡ Test 1: Kali Success</button>
+          <button class="preset-btn" data-preset="failover">🔄 Test 2: User-Approved Failover</button>
+          <button class="preset-btn" data-preset="syntax_error">⚠️ Test 3: Syntax Error</button>
+          <button class="preset-btn" data-preset="parrot_down">❌ Test 4: Parrot Offline</button>
+          <button class="preset-btn" data-preset="timeout">⏳ Test 5: Timeout</button>
+          
+          <div class="sample-library-dropdown">
+            <span class="scenarios-title" style="font-size:0.75rem;">Sample Library:</span>
+            <select class="samples-select" id="sampleSelect">
+              <option value="normal">Array Math (Normal Kali)</option>
+              <option value="failover">Dependency Failover (User-Approved)</option>
+              <option value="syntax_error">Broken Syntax (Compiler Diagnostic)</option>
+              <option value="parrot_down">Parrot Offline Test</option>
+              <option value="timeout">Infinite Loop (Watchdog)</option>
+              <option value="interactive_stdin">Stdin Input Processing</option>
+              <option value="scanf_sum">Two Number Sum (scanf)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Two-Column Workbench Layout -->
+        <div class="workbench-grid">
+          
+          <!-- LEFT CARD: C PROGRAM EDITOR -->
+          <section class="card editor-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"/>
+                  <polyline points="8 6 2 12 8 18"/>
+                </svg>
+                C Program Editor
+              </div>
+              <div class="editor-file-badge" id="fileTag">program.c</div>
+            </div>
+
+            <!-- Editor Action Buttons: Example, Run Program, Clear -->
+            <div class="editor-actions-row">
+              <button class="btn btn-primary" id="btnRunProgram" title="Execute program on CONTINUUM cross-OS pipeline">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Run Program</span>
+              </button>
+
+              <button class="btn btn-secondary" id="btnExample" title="Load an example C program">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                <span>Example</span>
+              </button>
+
+              <button class="btn btn-danger-outline" id="btnClearEditor" title="Clear editor content">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                <span>Clear</span>
+              </button>
+            </div>
+
+            <!-- Code Editor Container -->
+            <div class="editor-container-wrapper">
+              <div class="editor-subbar">
+                <span>Language: C (GCC 14)</span>
+                <span id="charCount">0 lines</span>
+              </div>
+              <div class="editor-box">
+                <div class="line-numbers" id="lineNumbers">1</div>
+                <textarea id="codeEditor" spellcheck="false" placeholder="Write or paste your C program code here..."></textarea>
+              </div>
+            </div>
+
+            <!-- Program Input (stdin) Section -->
+            <div class="stdin-container-wrapper">
+              <div class="stdin-header-bar">
+                <div class="stdin-title-group">
+                  <label for="stdinData" class="stdin-label">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="4 17 10 11 4 5"/>
+                      <line x1="12" y1="19" x2="20" y2="19"/>
+                    </svg>
+                    Program Input (stdin)
+                  </label>
+                  <span id="stdinWaitingMsg" class="stdin-waiting-badge" style="display:none;">Waiting for program input...</span>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnClearStdin" title="Clear stdin input values">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                  <span>Clear Input</span>
+                </button>
+              </div>
+              <div class="stdin-helper-text">Enter input values here. Each value can be separated by a newline.</div>
+              <textarea id="stdinData" class="stdin-textarea" rows="4" spellcheck="false" placeholder="Enter input values here. Each value can be separated by a newline. (e.g. 10&#10;20)"></textarea>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="parameters-grid">
+              <div class="form-group">
+                <label for="compilerFlags">Compiler Flags</label>
+                <input type="text" id="compilerFlags" class="input-control" value="-Wall -O2" placeholder="-Wall -O2">
+              </div>
+              <div class="form-group">
+                <label for="timeoutSeconds">Timeout (sec)</label>
+                <input type="number" id="timeoutSeconds" class="input-control" value="10" min="1" max="60">
+              </div>
+            </div>
+
+            <!-- Simulation Checkboxes -->
+            <div class="simulation-box">
+              <label class="checkbox-control" title="Simulates missing system dependency on Kali Linux to test automated failover">
+                <input type="checkbox" id="chkSimulateKaliEnv">
+                <span>Simulate Kali Environment Failure</span>
+              </label>
+              <label class="checkbox-control" title="Simulates Parrot OS being offline to test failover abort">
+                <input type="checkbox" id="chkSimulateParrotDown">
+                <span>Simulate Parrot Offline</span>
+              </label>
+            </div>
+          </section>
+
+          <!-- RIGHT CARD: EXECUTION RESULT PANEL -->
+          <section class="card result-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Execution Result Panel
+              </div>
+              <span id="pipelineStatusText" class="result-status-caption">Ready for execution</span>
+            </div>
+
+            <!-- Result Status HUD Grid (Status, Target, Exit, Migration, Time) -->
+            <div class="result-hud-grid">
+              <div class="hud-box">
+                <span class="hud-box-label">Execution Status</span>
+                <span class="hud-box-val" id="hudStatus">STANDBY</span>
+              </div>
+              <div class="hud-box">
+                <span class="hud-box-label">Executed On</span>
+                <span class="hud-box-val" id="hudTarget">--</span>
+              </div>
+              <div class="hud-box">
+                <span class="hud-box-label">Exit Code</span>
+                <span class="hud-box-val" id="hudExitCode">--</span>
+                <span id="hudExitLatency" style="display:none;">--</span>
+              </div>
+              <div class="hud-box">
+                <span class="hud-box-label">Migration Status</span>
+                <span class="hud-box-val" id="hudMigrationStatus">No Migration</span>
+              </div>
+              <div class="hud-box">
+                <span class="hud-box-label">Execution Time</span>
+                <span class="hud-box-val" id="hudLatencyTime">--</span>
+                <span id="hudJobId" style="display:none;">None</span>
+              </div>
+            </div>
+
+            <!-- User-Approved Failover Action Banner (Visible when AWAITING_APPROVAL) -->
+            <div id="failoverConfirmationBanner" class="failover-inline-card" style="display:none;">
+              <div class="failover-inline-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:1.3rem;">⚠️</span>
+                  <div>
+                    <h4 style="margin:0; font-size:0.95rem; font-weight:700; color:var(--warning-color, #f59e0b);">
+                      Environment Failure Detected on Kali Linux
+                    </h4>
+                    <div id="inlineFailureDetails" style="font-size:0.8rem; color:var(--text-muted); font-family:'Fira Code', monospace; margin-top:2px;"></div>
+                  </div>
+                </div>
+              </div>
+              <p style="margin:10px 0 12px; font-size:0.92rem; font-weight:600; color:var(--text-main); line-height:1.4;">
+                Kali Linux could not execute this program because of an environment issue. Would you like to retry execution on Parrot OS?
+              </p>
+              <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnBannerStayKali" style="font-weight:600;">
+                  No, Stay on Kali
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnBannerMigrateParrot" style="background:var(--parrot-color, #00d26a); border-color:var(--parrot-color, #00d26a); color:#0a0e17; font-weight:700;">
+                  Yes, Migrate to Parrot
+                </button>
+              </div>
+            </div>
+
+            <!-- Interactive Continuity Execution Pipeline -->
+            <div class="pipeline-flow-container">
+              <div class="pipeline-title">Continuity Execution Pipeline</div>
+              <div class="pipeline-diagram">
+                <div class="pipeline-node active" id="nodeWindows">
+                  <span class="node-icon">💻</span>
+                  <span class="node-name">Windows Host</span>
+                  <span class="node-env">Controller</span>
+                </div>
+
+                <div class="pipeline-connector" id="wireKali"></div>
+
+                <div class="pipeline-node" id="nodeKali">
+                  <span class="node-icon">🐉</span>
+                  <span class="node-name">Kali Linux</span>
+                  <span class="node-env">Primary VM</span>
+                </div>
+
+                <div class="pipeline-connector failover" id="wireFailover">
+                  <span class="connector-label" id="wireFailoverBadge">Failover ➔</span>
+                </div>
+
+                <div class="pipeline-node" id="nodeParrot">
+                  <span class="node-icon">🦜</span>
+                  <span class="node-name">Parrot OS</span>
+                  <span class="node-env">Backup VM</span>
+                </div>
+
+                <div class="pipeline-connector" id="wireOutput"></div>
+
+                <div class="pipeline-node" id="nodeOutput">
+                  <span class="node-icon">🏁</span>
+                  <span class="node-name">Final Result</span>
+                  <span class="node-env" id="nodeOutputEnv">Verified</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Program Output & Forensics Tabs -->
+            <div class="console-box-container">
+              <div class="console-tabs-bar">
+                <button class="console-tab active" data-tab="stdout">Program Output (stdout)</button>
+                <button class="console-tab" data-tab="stderr">stderr Stream</button>
+                <button class="console-tab" data-tab="compiler">Compiler Diagnostics</button>
+                <button class="console-tab" data-tab="forensics">Migration Forensics</button>
+              </div>
+              <div class="console-body" id="consoleBody">Press "Run Program" to compile and execute your C program.</div>
+            </div>
+
+            <!-- Execution Logs & Audit Trail Timeline -->
+            <div class="timeline-box">
+              <div class="timeline-header">
+                <span>Execution Logs & Audit Trail</span>
+                <span id="timelineCount">0 events</span>
+              </div>
+              <div class="timeline-container" id="timelineContainer">
+                <div class="timeline-item" style="color:var(--text-muted);">
+                  <span class="timeline-dot info"></span>
+                  <div class="timeline-content">
+                    <span class="timeline-msg">System initialized. Ready for cross-OS execution.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </section>
+        </div><!-- /.workbench-grid -->
+
+        <!-- System Status Cards (Kali & Parrot) -->
+        <div class="section-row" style="margin-top:20px;">
+          <div class="cards-grid-2">
+            <!-- Kali Linux Status Card -->
+            <div class="card status-card">
+              <div class="status-card-header">
+                <div class="status-card-title">
+                  <span class="node-icon-large">🐉</span>
+                  <div>
+                    <h4>Kali Linux Environment</h4>
+                    <span class="node-badge-tag primary">PRIMARY EXECUTION NODE</span>
+                  </div>
+                </div>
+                <span class="badge offline" id="cardKaliBadge">OFFLINE</span>
+              </div>
+              <div class="status-card-body">
+                <div class="status-row">
+                  <span class="status-lbl">Agent Endpoint:</span>
+                  <span class="status-val mono" id="cardKaliEndpoint">http://192.168.56.101:8001</span>
+                </div>
+                <div class="status-row">
+                  <span class="status-lbl">Ping Latency:</span>
+                  <span class="status-val" id="cardKaliLatency">-- ms</span>
+                </div>
+                <div class="status-row">
+                  <span class="status-lbl">Toolchain:</span>
+                  <span class="status-val">GCC 14 (x86_64-linux-gnu)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parrot OS Status Card -->
+            <div class="card status-card">
+              <div class="status-card-header">
+                <div class="status-card-title">
+                  <span class="node-icon-large">🦜</span>
+                  <div>
+                    <h4>Parrot OS Environment</h4>
+                    <span class="node-badge-tag backup">BACKUP FAILOVER NODE</span>
+                  </div>
+                </div>
+                <span class="badge offline" id="cardParrotBadge">OFFLINE</span>
+              </div>
+              <div class="status-card-body">
+                <div class="status-row">
+                  <span class="status-lbl">Agent Endpoint:</span>
+                  <span class="status-val mono" id="cardParrotEndpoint">http://192.168.56.102:8002</span>
+                </div>
+                <div class="status-row">
+                  <span class="status-lbl">Ping Latency:</span>
+                  <span class="status-val" id="cardParrotLatency">-- ms</span>
+                </div>
+                <div class="status-row">
+                  <span class="status-lbl">Toolchain:</span>
+                  <span class="status-val">GCC 14 (x86_64-linux-gnu)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Execution History Table -->
+        <div class="section-row" style="margin-top:20px;">
+          <section class="card history-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Recent Execution History
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btnRefreshJobs">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 4v6h-6M1 20v-6h6"/>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                Refresh Records
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table" id="jobsTable">
+                <thead>
+                  <tr>
+                    <th>Job ID</th>
+                    <th>Program Title</th>
+                    <th>Status</th>
+                    <th>Executed On</th>
+                    <th>Exit Code</th>
+                    <th>Failover Migrated?</th>
+                    <th>Classification / Reason</th>
+                    <th>Execution Time</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="jobsTableBody">
+                  <tr>
+                    <td colspan="9" class="empty-table-cell">No previous jobs recorded yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+      </div><!-- /#viewExecute -->
+
+
+      <!-- ========================================================= -->
+      <!-- VIEW 2: EXECUTION HISTORY (Dedicated History Logbook)     -->
+      <!-- ========================================================= -->
+      <div class="view-section" id="viewHistory">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title">Execution History & Audit Logbook</h2>
+            <p class="content-desc">Immutable audit records of all C program executions, rule-based classifier verdicts, and automatic VM migrations.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btnRefreshJobsFull">Refresh Records</button>
+        </div>
+
+        <!-- History Summary Metrics -->
+        <div class="metrics-grid-4">
+          <div class="card metric-box">
+            <span class="metric-title">Total Executions</span>
+            <span class="metric-number" id="metricTotalJobs">--</span>
+            <span class="metric-note">Recorded in SQLite database</span>
+          </div>
+          <div class="card metric-box">
+            <span class="metric-title">Kali Primary Success</span>
+            <span class="metric-number text-primary" id="metricKaliSuccess">--</span>
+            <span class="metric-note">Completed without failover</span>
+          </div>
+          <div class="card metric-box">
+            <span class="metric-title">Failover Migrations</span>
+            <span class="metric-number text-success" id="metricParrotMigrated">--</span>
+            <span class="metric-note">Recovered on Parrot OS</span>
+          </div>
+          <div class="card metric-box">
+            <span class="metric-title">Errors & Timeouts</span>
+            <span class="metric-number text-danger" id="metricErrors">--</span>
+            <span class="metric-note">Normal bugs / Watchdog terminations</span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="table-responsive">
+            <table class="data-table" id="jobsTableFull">
+              <thead>
+                <tr>
+                  <th>Job ID</th>
+                  <th>Program Title</th>
+                  <th>Status</th>
+                  <th>Executed On</th>
+                  <th>Exit Code</th>
+                  <th>Failover Migrated?</th>
+                  <th>Classification / Reason</th>
+                  <th>Execution Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="jobsTableBodyFull">
+                <tr>
+                  <td colspan="9" class="empty-table-cell">Loading execution records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /#viewHistory -->
+
+
+      <!-- ========================================================= -->
+      <!-- VIEW 3: SYSTEM STATUS (Dedicated Node Telemetry)          -->
+      <!-- ========================================================= -->
+      <div class="view-section" id="viewStatus">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title">System Status & Environment Health</h2>
+            <p class="content-desc">Live status, connectivity, and telemetry for the CONTINUUM cross-OS VM cluster.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btnRefreshStatusView">Ping All Nodes</button>
+        </div>
+
+        <div class="cards-grid-3">
+          <!-- Kali Linux Panel -->
+          <div class="card node-detail-card">
+            <div class="node-detail-header">
+              <span class="node-icon-large">🐉</span>
+              <div>
+                <h3>Kali Linux VM</h3>
+                <span class="node-badge-tag primary">PRIMARY EXECUTION TARGET</span>
+              </div>
+              <span class="badge offline" id="statusViewBadgeKali">OFFLINE</span>
+            </div>
+            <div class="node-specs-list">
+              <div class="spec-row">
+                <span class="spec-lbl">Agent Endpoint</span>
+                <span class="spec-val mono" id="statusViewUrlKali">http://192.168.56.101:8001</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Ping Latency</span>
+                <span class="spec-val" id="statusViewLatencyKali">-- ms</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Compiler</span>
+                <span class="spec-val">GCC 14 (x86_64-linux-gnu)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Role</span>
+                <span class="spec-val">Default Dispatch Target</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:14px; width:100%;" id="btnTestKaliPing">Ping Kali Agent</button>
+          </div>
+
+          <!-- Parrot OS Panel -->
+          <div class="card node-detail-card">
+            <div class="node-detail-header">
+              <span class="node-icon-large">🦜</span>
+              <div>
+                <h3>Parrot OS VM</h3>
+                <span class="node-badge-tag backup">BACKUP FAILOVER TARGET</span>
+              </div>
+              <span class="badge offline" id="statusViewBadgeParrot">OFFLINE</span>
+            </div>
+            <div class="node-specs-list">
+              <div class="spec-row">
+                <span class="spec-lbl">Agent Endpoint</span>
+                <span class="spec-val mono" id="statusViewUrlParrot">http://192.168.56.102:8002</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Ping Latency</span>
+                <span class="spec-val" id="statusViewLatencyParrot">-- ms</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Compiler</span>
+                <span class="spec-val">GCC 14 (x86_64-linux-gnu)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Role</span>
+                <span class="spec-val">Secondary Failover Receiver</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:14px; width:100%;" id="btnTestParrotPing">Ping Parrot Agent</button>
+          </div>
+
+          <!-- Windows Controller Panel -->
+          <div class="card node-detail-card">
+            <div class="node-detail-header">
+              <span class="node-icon-large">💻</span>
+              <div>
+                <h3>Windows Host Controller</h3>
+                <span class="node-badge-tag controller">CENTRAL ORCHESTRATION</span>
+              </div>
+              <span class="badge online">ONLINE</span>
+            </div>
+            <div class="node-specs-list">
+              <div class="spec-row">
+                <span class="spec-lbl">Host Service</span>
+                <span class="spec-val mono">FastAPI @ 127.0.0.1:8000</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Database</span>
+                <span class="spec-val">SQLite3 (storage/continuum.db)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Classifier</span>
+                <span class="spec-val text-primary">Active (Rule-Based A/B)</span>
+              </div>
+              <div class="spec-row">
+                <span class="spec-lbl">Failover Engine</span>
+                <span class="spec-val text-success">Automated Failover Ready</span>
+              </div>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:20px;">Central coordinator active</div>
+          </div>
+        </div>
+
+        <!-- Failover Pathway Card -->
+        <div class="card" style="margin-top:20px; padding:20px;">
+          <div class="card-title" style="margin-bottom:8px;">Failover Pathway Readiness</div>
+          <p id="failoverRouteStatus" style="font-size:0.82rem; color:var(--text-muted); margin-bottom:14px;">Evaluating VM pathways...</p>
+          <div class="pipeline-diagram" style="max-width:760px; margin:0 auto;">
+            <div class="pipeline-node active">
+              <span class="node-icon">💻</span>
+              <span class="node-name">Windows Controller</span>
+            </div>
+            <div class="pipeline-connector pulsing"></div>
+            <div class="pipeline-node" id="routeKaliNode">
+              <span class="node-icon">🐉</span>
+              <span class="node-name">Kali Linux</span>
+            </div>
+            <div class="pipeline-connector pulsing"></div>
+            <div class="pipeline-node" id="routeParrotNode">
+              <span class="node-icon">🦜</span>
+              <span class="node-name">Parrot OS</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-node">
+              <span class="node-icon">🏁</span>
+              <span class="node-name">Final Result</span>
+            </div>
+          </div>
+        </div>
+      </div><!-- /#viewStatus -->
+
+
+      <!-- ========================================================= -->
+      <!-- VIEW 4: TEST CASES (Verification Matrix 1–5)              -->
+      <!-- ========================================================= -->
+      <div class="view-section" id="viewTestCases">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title">Test Cases & Verification Scenarios</h2>
+            <p class="content-desc">Test suite verifying automated cross-OS compilation, classifier discrimination, and transparent failover.</p>
+          </div>
+          <span class="badge online" style="font-size:0.8rem; padding:6px 12px;">25/25 Pytest Passing</span>
+        </div>
+
+        <div class="cards-grid-auto">
+          <!-- Test 1 -->
+          <div class="card testcase-box">
+            <div class="testcase-header">
+              <span class="testcase-badge">TEST 1</span>
+              <span class="badge online">SUCCESS_KALI</span>
+            </div>
+            <h4 class="testcase-title">Kali Normal Execution</h4>
+            <p class="testcase-desc">Valid C array math program executed on primary VM. Runs cleanly, compiler passes with 0 warnings, program outputs correct mathematical calculation.</p>
+            <div class="testcase-meta">
+              <div><strong>Classifier:</strong> None (Clean Run)</div>
+              <div><strong>Target:</strong> Kali Linux (Primary)</div>
+              <div><strong>Migration:</strong> NO (Standard Run)</div>
+            </div>
+            <div class="testcase-actions">
+              <button class="btn btn-secondary btn-sm btn-load-test" data-preset="normal">Load into Studio</button>
+              <button class="btn btn-primary btn-sm btn-run-test" data-preset="normal">Run Test 1</button>
+            </div>
+          </div>
+
+          <!-- Test 2 -->
+          <div class="card testcase-box">
+            <div class="testcase-header">
+              <span class="testcase-badge">TEST 2</span>
+              <span class="badge degraded">SUCCESS_PARROT_MIGRATED</span>
+            </div>
+            <h4 class="testcase-title">User-Approved Failover to Parrot OS</h4>
+            <p class="testcase-desc">Simulates a missing dependency failure on Kali Linux. The classifier identifies an OS environment defect, halts automatic failover, prompts the user for confirmation, and upon approval transfers the C source code and input parameters to Parrot OS.</p>
+            <div class="testcase-meta">
+              <div><strong>Classifier:</strong> Category B (Environment Defect)</div>
+              <div><strong>Target:</strong> Parrot OS (Backup)</div>
+              <div><strong>Migration:</strong> ⚡ YES (User-Approved)</div>
+            </div>
+            <div class="testcase-actions">
+              <button class="btn btn-secondary btn-sm btn-load-test" data-preset="failover">Load into Studio</button>
+              <button class="btn btn-primary btn-sm btn-run-test" data-preset="failover">Run Test 2</button>
+            </div>
+          </div>
+
+          <!-- Test 3 -->
+          <div class="card testcase-box">
+            <div class="testcase-header">
+              <span class="testcase-badge">TEST 3</span>
+              <span class="badge offline">FAILED_KALI_NORMAL</span>
+            </div>
+            <h4 class="testcase-title">Program Syntax Error (No Migration)</h4>
+            <p class="testcase-desc">Intentional broken C code with missing semicolon. Compiler fails. Classifier identifies user program bug and halts execution immediately without wasteful failover.</p>
+            <div class="testcase-meta">
+              <div><strong>Classifier:</strong> Category A (Program Error)</div>
+              <div><strong>Target:</strong> Kali Linux (Halted)</div>
+              <div><strong>Migration:</strong> NO (No Wasteful Migration)</div>
+            </div>
+            <div class="testcase-actions">
+              <button class="btn btn-secondary btn-sm btn-load-test" data-preset="syntax_error">Load into Studio</button>
+              <button class="btn btn-primary btn-sm btn-run-test" data-preset="syntax_error">Run Test 3</button>
+            </div>
+          </div>
+
+          <!-- Test 4 -->
+          <div class="card testcase-box">
+            <div class="testcase-header">
+              <span class="testcase-badge">TEST 4</span>
+              <span class="badge offline">MIGRATION_FAILED</span>
+            </div>
+            <h4 class="testcase-title">Backup Environment Offline</h4>
+            <p class="testcase-desc">Simulates Kali environment defect while Parrot OS backup is offline. Failover manager attempts failover, probes Parrot health, detects downtime, and aborts cleanly.</p>
+            <div class="testcase-meta">
+              <div><strong>Classifier:</strong> Category B (Environment Defect)</div>
+              <div><strong>Target:</strong> Kali Failed → Parrot Offline</div>
+              <div><strong>Migration:</strong> ABORTED (Secondary Down)</div>
+            </div>
+            <div class="testcase-actions">
+              <button class="btn btn-secondary btn-sm btn-load-test" data-preset="parrot_down">Load into Studio</button>
+              <button class="btn btn-primary btn-sm btn-run-test" data-preset="parrot_down">Run Test 4</button>
+            </div>
+          </div>
+
+          <!-- Test 5 -->
+          <div class="card testcase-box">
+            <div class="testcase-header">
+              <span class="testcase-badge">TEST 5</span>
+              <span class="badge offline">TIMEOUT</span>
+            </div>
+            <h4 class="testcase-title">Watchdog Execution Timeout</h4>
+            <p class="testcase-desc">Infinite while(1) loop program. The execution watchdog monitors process runtime and forcibly terminates execution upon reaching the configured timeout limit.</p>
+            <div class="testcase-meta">
+              <div><strong>Classifier:</strong> Watchdog Expiration</div>
+              <div><strong>Target:</strong> Kali Linux (Terminated)</div>
+              <div><strong>Migration:</strong> NO (Logic Infinite Loop)</div>
+            </div>
+            <div class="testcase-actions">
+              <button class="btn btn-secondary btn-sm btn-load-test" data-preset="timeout">Load into Studio</button>
+              <button class="btn btn-primary btn-sm btn-run-test" data-preset="timeout">Run Test 5</button>
+            </div>
+          </div>
+        </div>
+      </div><!-- /#viewTestCases -->
+
+
+      <!-- ========================================================= -->
+      <!-- VIEW 5: SETTINGS                                          -->
+      <!-- ========================================================= -->
+      <div class="view-section" id="viewSettings">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title">Settings & Network Configuration</h2>
+            <p class="content-desc">Configure VM agent REST endpoints and frontend preferences without modifying backend configuration.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid-2">
+          <!-- Agent Network Card -->
+          <div class="card" style="padding:22px;">
+            <div class="card-title" style="margin-bottom:10px;">Agent Network Endpoints</div>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px;">
+              Specify REST API addresses for the execution agents. Use <code>192.168.56.x</code> for VirtualBox Host-Only or <code>127.0.0.1:8001/8002</code> for local dev.
+            </p>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="settingsViewKaliUrl">Kali Linux Agent Base URL (Primary)</label>
+              <input type="text" id="settingsViewKaliUrl" class="input-control" value="http://192.168.56.101:8001">
+            </div>
+            <div class="form-group" style="margin-bottom:18px;">
+              <label for="settingsViewParrotUrl">Parrot OS Agent Base URL (Backup)</label>
+              <input type="text" id="settingsViewParrotUrl" class="input-control" value="http://192.168.56.102:8002">
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" id="btnSaveViewSettings">Save & Check Health</button>
+              <button class="btn btn-secondary btn-sm" id="btnPresetHostOnly">Host-Only Preset</button>
+              <button class="btn btn-secondary btn-sm" id="btnPresetLocalhost">Localhost Preset</button>
+            </div>
+          </div>
+
+          <!-- Client Preferences Card -->
+          <div class="card" style="padding:22px;">
+            <div class="card-title" style="margin-bottom:10px;">Interface Preferences</div>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="selectPollInterval">Agent Health Polling Frequency</label>
+              <select class="input-control" id="selectPollInterval">
+                <option value="5000">Fast (Every 5 seconds)</option>
+                <option value="10000" selected>Normal (Every 10 seconds)</option>
+                <option value="30000">Eco (Every 30 seconds)</option>
+                <option value="0">Manual Refresh Only</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="selectEditorFontSize">Editor Font Size</label>
+              <select class="input-control" id="selectEditorFontSize">
+                <option value="13px">13px - Compact</option>
+                <option value="14px" selected>14px - Standard</option>
+                <option value="16px">16px - Large</option>
+              </select>
+            </div>
+            <div style="margin-top:16px;">
+              <label class="checkbox-control">
+                <input type="checkbox" id="chkAutoScrollConsole" checked>
+                <span>Auto-scroll terminal output during execution</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div><!-- /#viewSettings -->
+
+
+      <!-- ========================================================= -->
+      <!-- VIEW 6: ABOUT & DOCUMENTATION                             -->
+      <!-- ========================================================= -->
+      <div class="view-section" id="viewAbout">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title">About CONTINUUM</h2>
+            <p class="content-desc">College research project on intelligent cross-OS program continuity, GCC compilation orchestration, and transparent VM failover.</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:22px; margin-bottom:20px;">
+          <h3 style="font-size:1.1rem; color:var(--text-main); margin-bottom:10px;">Mission & Architecture</h3>
+          <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.6; margin-bottom:14px;">
+            <strong>CONTINUUM</strong> coordinates seamless cross-OS program continuity between a Windows host central controller and Linux execution nodes. When a developer submits C source code, CONTINUUM compiles and runs it on a primary VM (Kali Linux). If an execution failure is caused by an operating system environment deficiency (missing dependencies, uninstalled libraries, or agent downtime), CONTINUUM automatically and seamlessly migrates the source code, compiler flags, and input data to a backup VM (Parrot OS) without requiring manual developer intervention.
+          </p>
+          <div class="ascii-block">
+            <pre>
++-------------------------------------------------------+
+|                     Windows Host                      |
+|    CONTINUUM Central Controller & Web Dashboard       |
+|    (FastAPI: 8000 + SQLite DB + Modern Web UI)        |
++---------------------------+---------------------------+
+                            |
+         REST API Dispatch / Health Probes
+                            |
+   +------------------------+------------------------+
+   | (Primary Execution Node)                        | (Backup Execution Node)
+   v                                                 v
++-----------------------+                         +-----------------------+
+|     Kali Linux VM     |                         |     Parrot OS VM      |
+|  IP: 192.168.56.101   |                         |  IP: 192.168.56.102   |
+|  - GCC 14 Toolchain   |                         |  - GCC 14 Toolchain   |
+|  - Timeout Watchdog   |                         |  - Timeout Watchdog   |
++-----------+-----------+                         +-----------+-----------+
+            |                                                 ^
+            | (On Environment Failure)                        |
+            +------------> [ Failure Classifier ] ------------+
+                           (Distinguishes Syntax/Logic
+                            from OS Deficiencies)</pre>
+          </div>
+        </div>
+
+        <!-- Failure Classifier Rules Card -->
+        <div class="card" style="padding:22px; margin-bottom:20px;">
+          <h3 style="font-size:1.1rem; color:var(--text-main); margin-bottom:10px;">Rule-Based Failure Classifier Logic</h3>
+          <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.6; margin-bottom:14px;">
+            An explainable rule-based failure classification engine distinguishes normal user mistakes from genuine OS environment defects:
+          </p>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Failure Category</th>
+                  <th>Typical Causes</th>
+                  <th>Controller Action</th>
+                  <th>Failover Triggered?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge offline">Category A (Normal Error)</span></td>
+                  <td>Syntax errors, missing semicolons, type mismatches, arithmetic overflow, logic errors.</td>
+                  <td>Returns compilation/runtime diagnostics directly. Halts cleanly.</td>
+                  <td><strong style="color:var(--danger-color);">NO (No wasteful migration)</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="badge degraded">Category B (Environment Defect)</span></td>
+                  <td>Missing system headers, missing libraries, agent unreachable, toolchain configuration error.</td>
+                  <td>Probes Parrot OS health, automatically migrates source code, restarts execution.</td>
+                  <td><strong style="color:var(--success-color);">YES (Transparent Failover)</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="badge offline">Watchdog Expiration</span></td>
+                  <td>Infinite loops, blocking stdin waits, execution exceeding timeout limit.</td>
+                  <td>Forcibly terminates process via SIGKILL. Returns timeout diagnostic.</td>
+                  <td><strong style="color:var(--danger-color);">NO (Halts infinite compute)</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Technical Specifications Grid -->
+        <div class="card" style="padding:22px;">
+          <h3 style="font-size:1.1rem; color:var(--text-main); margin-bottom:14px;">System Specifications</h3>
+          <div class="cards-grid-2">
+            <div class="spec-row">
+              <span class="spec-lbl">Controller Framework</span>
+              <span class="spec-val">FastAPI, Python 3.13, Uvicorn, SQLite3</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-lbl">Virtualization Engine</span>
+              <span class="spec-val">Oracle VirtualBox (Host-Only Network 192.168.56.x)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-lbl">Execution Environments</span>
+              <span class="spec-val">Kali Linux 2024.x (Primary), Parrot OS 6.x (Backup)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-lbl">Compiler Toolchain</span>
+              <span class="spec-val">GCC 14 (x86_64-linux-gnu)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-lbl">Automated Test Suite</span>
+              <span class="spec-val">Pytest (25/25 Passing Unit & Integration Tests)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-lbl">Software Version</span>
+              <span class="spec-val">CONTINUUM v2.0 Production Release</span>
+            </div>
+          </div>
+        </div>
+      </div><!-- /#viewAbout -->
+
+    </div><!-- /.main-viewport -->
+  </div><!-- /.app-layout -->
+
+  <!-- ========================================================= -->
+  <!-- MODAL: AGENT NETWORK CONFIGURATION                        -->
+  <!-- ========================================================= -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Agent Network Configuration</h3>
+        <button class="btn-icon" id="btnCloseSettingsModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">
+          Configure the REST API endpoint addresses for the Kali Linux and Parrot OS agents.
+          Use <code>http://127.0.0.1:8001</code> for localhost / NAT port forwarding, or <code>http://192.168.56.x</code> for VirtualBox Host-Only networking.
+        </p>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label for="inputKaliUrl">Kali Linux Agent Base URL (Primary)</label>
+          <input type="text" id="inputKaliUrl" class="input-control" value="http://192.168.56.101:8001">
+        </div>
+        <div class="form-group">
+          <label for="inputParrotUrl">Parrot OS Agent Base URL (Backup)</label>
+          <input type="text" id="inputParrotUrl" class="input-control" value="http://192.168.56.102:8002">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" id="btnCancelSettings">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="btnSaveSettings">Save & Re-check</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: USER-APPROVED CROSS-OS FAILOVER CONFIRMATION       -->
+  <!-- ========================================================= -->
+  <div class="modal-backdrop" id="failoverModal">
+    <div class="modal-dialog" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 style="display:flex; align-items:center; gap:8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warning-color, #f59e0b)" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Environment Failure Detected
+        </h3>
+        <button class="btn-icon" id="btnCloseFailoverModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="failoverDetectedFailureBox" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+          <div style="font-weight: 600; font-size: 0.78rem; text-transform: uppercase; color: var(--danger-color, #ef4444); margin-bottom: 6px; letter-spacing: 0.5px;">
+            Detected Environment Failure:
+          </div>
+          <div id="failoverFailureReason" style="font-size: 0.85rem; color: var(--text-main); font-family: 'Fira Code', monospace; white-space: pre-wrap; line-height: 1.45; word-break: break-word;"></div>
+        </div>
+        <p style="font-size: 0.95rem; font-weight: 500; color: var(--text-main); line-height: 1.5; margin-bottom: 8px;">
+          Kali Linux could not execute this program because of an environment issue. Would you like to retry execution on Parrot OS?
+        </p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0;">
+          Approving failover transfers the program source code and execution metadata to the backup environment (Parrot OS at 192.168.56.102:8002).
+        </p>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn btn-secondary btn-sm" id="btnStayOnKali" style="font-weight: 600;">
+          No, Stay on Kali
+        </button>
+        <button class="btn btn-primary btn-sm" id="btnMigrateToParrot" style="background: var(--parrot-color, #00d26a); border-color: var(--parrot-color, #00d26a); color: #0a0e17; font-weight: 700;">
+          Yes, Migrate to Parrot
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/samples.js?v=3.2"></script>
+  <script src="/js/app.js?v=3.2"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "agent_id": "parrot_backup",
+  "os_name": "Parrot OS 7.3 KDE Security",
+  "role": "backup",
+  "port": 8002,
+  "incompatible_headers": [],
+  "incompatible_libraries": []
+}
